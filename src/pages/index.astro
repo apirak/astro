@@ -1,16 +1,100 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar';
+import ConversationList from '../components/ConversationList';
+import ChatMessages from '../components/ChatMessages';
+import UserDetails from '../components/UserDetails';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Chatbot Configuration Tool">
+  <div class="flex h-screen">
+    <Sidebar client:load />
+    <main class="flex flex-1 overflow-hidden">
+      <ConversationList client:load />
+      <ChatMessages client:load />
+      <UserDetails client:load />
+    </main>
+  </div>
+</Layout>
+
+<style>
+  /* Custom styles for responsive layout */
+  @media (max-width: 1024px) {
+    .sidebar {
+      width: 48px;
+    }
+    .main {
+      width: calc(100% - 48px);
+    }
+  }
+  @media (max-width: 768px) {
+    .user-details {
+      display: none;
+    }
+    .conversation-list {
+      width: 35%;
+    }
+    .chat-messages {
+      width: 65%;
+    }
+  }
+  @media (max-width: 640px) {
+    .main {
+      flex-direction: column;
+    }
+    .conversation-list {
+      height: 30%;
+      width: 100%;
+    }
+    .chat-messages {
+      height: 70%;
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Script to handle responsive behavior
+  const sidebar = document.querySelector('.sidebar');
+  const main = document.querySelector('.main');
+  const conversationList = document.querySelector('.conversation-list');
+  const chatMessages = document.querySelector('.chat-messages');
+  const userDetails = document.querySelector('.user-details');
+
+  function handleResize() {
+    const width = window.innerWidth;
+    if (width <= 1024) {
+      sidebar.style.width = '48px';
+      main.style.width = 'calc(100% - 48px)';
+    } else {
+      sidebar.style.width = '64px';
+      main.style.width = 'calc(100% - 64px)';
+    }
+
+    if (width <= 768) {
+      userDetails.style.display = 'none';
+      conversationList.style.width = '35%';
+      chatMessages.style.width = '65%';
+    } else {
+      userDetails.style.display = 'block';
+      conversationList.style.width = '25%';
+      chatMessages.style.width = '50%';
+      userDetails.style.width = '25%';
+    }
+
+    if (width <= 640) {
+      main.style.flexDirection = 'column';
+      conversationList.style.height = '30%';
+      conversationList.style.width = '100%';
+      chatMessages.style.height = '70%';
+      chatMessages.style.width = '100%';
+    } else {
+      main.style.flexDirection = 'row';
+      conversationList.style.height = '100%';
+      chatMessages.style.height = '100%';
+    }
+  }
+
+  window.addEventListener('resize', handleResize);
+  handleResize(); // Call once to set initial layout
+</script>
